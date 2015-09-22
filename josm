@@ -1,0 +1,18 @@
+#!/bin/bash
+export lastversion=$(wget http://josm.openstreetmap.de/ --quiet -O -|html2text |grep 'Download josm-tested.jar (version'| sed 's/)//g' |awk '{print $5}')
+echo Ultima version online: $lastversion
+
+max=0
+cd /home/alejandro/osm
+for n in $(ls josm-*|sed 's/josm-//g' |sed 's/\.jar//');
+   do ((n > max)) && max=$n
+done;
+echo Ultima version descargada $max
+
+#wmname LG3D
+if (($max < $lastversion))
+   then wget http://josm.openstreetmap.de/josm-tested.jar -O josm-${lastversion}.jar
+   java -jar josm-${lastversion}.jar
+else
+   java -jar josm-${max}.jar
+fi
